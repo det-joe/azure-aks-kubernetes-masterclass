@@ -47,6 +47,8 @@ kubectl logs -f $(kubectl get po -n kube-system | egrep -o 'aci-connector-linux-
 - Click on **Review + Create**
 - Click on **Create**
 
+acrforaksdemo
+
 ## Step-02: Build Docker Image Locally
 - Review Docker Manigests 
 ```
@@ -74,7 +76,7 @@ docker stop kube-nginx-acr
 ```
 
 ## Step-04: Enable Docker Login for ACR Repository 
-- Go to Services -> Container Registries -> acrforaksdemo2
+- Go to Services -> Container Registries -> acrforaksdemo
 - Go to **Access Keys**
 - Click on **Enable Admin User**
 - Make a note of Username and password
@@ -84,7 +86,7 @@ docker stop kube-nginx-acr
 ### Build, Test Locally, Tag and Push to ACR
 ```
 # Export Command
-export ACR_REGISTRY=acrforaksdemo2.azurecr.io
+export ACR_REGISTRY=acrforaksdemo.azurecr.io
 export ACR_NAMESPACE=app1
 export ACR_IMAGE_NAME=kube-nginx-acr
 export ACR_IMAGE_TAG=v1
@@ -96,7 +98,7 @@ docker login $ACR_REGISTRY
 # Tag
 docker tag kube-nginx-acr:v1  $ACR_REGISTRY/$ACR_NAMESPACE/$ACR_IMAGE_NAME:$ACR_IMAGE_TAG
 It replaces as below
-docker tag kube-nginx-acr:v1 acrforaksdemo2.azurecr.io/app1/kube-nginx-acr:v1
+docker tag kube-nginx-acr:v1 acrforaksdemo.azurecr.io/app1/kube-nginx-acr:v1
 
 # List Docker Images to verify
 docker images kube-nginx-acr:v1
@@ -106,21 +108,21 @@ docker images $ACR_REGISTRY/$ACR_NAMESPACE/$ACR_IMAGE_NAME:$ACR_IMAGE_TAG
 docker push $ACR_REGISTRY/$ACR_NAMESPACE/$ACR_IMAGE_NAME:$ACR_IMAGE_TAG
 ```
 ### Verify Docker Image in ACR Repository
-- Go to Services -> Container Registries -> acrforaksdemo2
+- Go to Services -> Container Registries -> acrforaksdemo
 - Go to **Repositories** -> **app1/kube-nginx-acr**
 
 
 ## Step-05: Configure ACR integration for existing AKS clusters
 ```
 #Set ACR NAME
-export ACR_NAME=acrforaksdemo2
+export ACR_NAME=acrforaksdemo
 echo $ACR_NAME
 
 # Template
 az aks update -n myAKSCluster -g myResourceGroup --attach-acr <acr-name>
 
 # Replace Cluster, Resource Group and ACR Repo Name
-az aks update -n aksdemo2 -g aks-rg2 --attach-acr $ACR_NAME
+az aks update -n aksdemo -g aks-rg2 --attach-acr $ACR_NAME
 ```
 
 
@@ -130,7 +132,7 @@ az aks update -n aksdemo2 -g aks-rg2 --attach-acr $ACR_NAME
     spec:
       containers:
         - name: acrdemo-localdocker
-          image: acrforaksdemo2.azurecr.io/app1/kube-nginx-acr:v1
+          image: acrforaksdemo.azurecr.io/app1/kube-nginx-acr:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -163,13 +165,13 @@ kubectl delete -f kube-manifests/
 ## Step-08: Detach ACR from AKS Cluster (Optional)
 ```
 #Set ACR NAME
-export ACR_NAME=acrforaksdemo2
+export ACR_NAME=acrforaksdemo
 echo $ACR_NAME
 
 # Detach ACR with AKS Cluster
-az aks update -n aksdemo2 -g aks-rg2 --detach-acr $ACR_NAME
+az aks update -n aksdemo -g aks-rg1 --detach-acr $ACR_NAME
 
 # Delete ACR Repository
-Go To Services -> Container Registries -> acrforaksdemo2 -> Delete it
+Go To Services -> Container Registries -> acrforaksdemo -> Delete it
 ```
 

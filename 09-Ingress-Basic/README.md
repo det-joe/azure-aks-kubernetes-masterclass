@@ -25,12 +25,12 @@ az aks show --resource-group aks-rg1 --name aksdemo1 --query nodeResourceGroup -
 az network public-ip create --resource-group <REPLACE-OUTPUT-RG-FROM-PREVIOUS-COMMAND> --name myAKSPublicIPForIngress --sku Standard --allocation-method static --query publicIp.ipAddress -o tsv
 
 # REPLACE - Create Public IP: Replace Resource Group value
-az network public-ip create --resource-group MC_aks-rg1_aksdemo1_centralus --name myAKSPublicIPForIngress --sku Standard --allocation-method static --query publicIp.ipAddress -o tsv
+az network public-ip create --resource-group MC_aks-rg1_aksdemo_japanwest --name myAKSPublicIPForIngress --sku Standard --allocation-method static --query publicIp.ipAddress -o tsv
 ```
 - Make a note of Static IP which we will use in next step when installing Ingress Controller
 ```
 # Make a note of Public IP created for Ingress
-52.154.156.139
+104.214.139.3
 ```
 
 ## Step-03: Install Ingress Controller
@@ -43,7 +43,7 @@ kubectl create namespace ingress-basic
 
 # Add the official stable repository
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo add stable https://charts.helm.sh/stable #https://kubernetes-charts.storage.googleapis.com/
 helm repo update
 
 #  Customizing the Chart Before Installing. 
@@ -65,7 +65,7 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set controller.service.externalTrafficPolicy=Local \
-    --set controller.service.loadBalancerIP="52.154.156.139" 
+    --set controller.service.loadBalancerIP="104.214.139.3" 
 
 
 # List Services with labels
@@ -93,6 +93,10 @@ Primarily refer Settings -> Frontend IP Configuration
 
 ## Step-05: Deploy Application k8s manifests and verify
 ```
+
+# v1beta -> v1
+kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+
 # Deploy
 kubectl apply -f kube-manifests/
 

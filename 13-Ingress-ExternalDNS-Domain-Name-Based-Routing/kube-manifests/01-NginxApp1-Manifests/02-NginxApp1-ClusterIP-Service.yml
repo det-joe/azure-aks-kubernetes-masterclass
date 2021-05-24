@@ -4,6 +4,7 @@ metadata:
   name: app1-nginx-clusterip-service
   labels:
     app: app1-nginx
+  annotations:
 spec:
   type: ClusterIP
   selector:

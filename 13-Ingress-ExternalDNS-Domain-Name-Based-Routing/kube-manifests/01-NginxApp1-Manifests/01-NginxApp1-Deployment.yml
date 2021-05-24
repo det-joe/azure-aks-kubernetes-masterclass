@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app1-nginx
-          image: trblmkr.azurecr.io/det:v2 
+          image: trblmkr.azurecr.io/det:v5
           ports:
             - containerPort: 80
 

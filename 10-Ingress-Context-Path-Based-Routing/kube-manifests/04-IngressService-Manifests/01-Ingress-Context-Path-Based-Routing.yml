@@ -4,7 +4,8 @@ metadata:
   name: ingress-cpr
 spec:  
   rules:
-  - http:
+  - host: eapp1.det.asia
+    http:
       paths:
       - path: /app1/
         backend:

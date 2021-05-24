@@ -122,7 +122,7 @@ echo $ACR_NAME
 az aks update -n myAKSCluster -g myResourceGroup --attach-acr <acr-name>
 
 # Replace Cluster, Resource Group and ACR Repo Name
-az aks update -n aksdemo -g aks-rg2 --attach-acr $ACR_NAME
+az aks update -n aksdemo -g aks-rg1 --attach-acr $ACR_NAME
 ```
 
 
